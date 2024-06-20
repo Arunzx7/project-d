@@ -1,11 +1,12 @@
 const  User = require('../models/userModel')
 
 const isUser = async (req,res,next)=>{
+   console.log('in user')
     if(req.session.user_id){
        return next()
     }else{
        
-       return res.redirect('/')
+       return res.redirect('/login')
     }
 }
 

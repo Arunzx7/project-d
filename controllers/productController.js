@@ -202,6 +202,7 @@ const editProduct = async (req, res, next) => {
 const productDetails = async (req, res) => {
   try {
     const id = req.query.id
+    console.log('in productdetails')
     const product = await Products.findOne({_id:id})
     console.log(product);
     const userData = req.session.user;

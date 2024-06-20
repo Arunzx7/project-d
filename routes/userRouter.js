@@ -46,7 +46,7 @@ const session = require("express-session");
 const user_router = express.Router();
 const path = require("path");
 const bodyparser = require("body-parser");
-const nocache = require("nocache");
+  const nocache = require("nocache");
 const { isUser, isLoggedUser } = require("../middleware/userAuth");
 
 // to convert the incoming request into url encoded format
@@ -60,11 +60,12 @@ user_router.get("/get", isLoggedUser, loginController.loadOtp);
 user_router.post("/otp", isLoggedUser, loginController.verifyOTP);
 user_router.get("/checkemail", isLoggedUser, loginController.emailCheck);
 user_router.get("/loadOtp", isLoggedUser, loginController.loadOtp);
-user_router.get("/productDetail", isUser, productController.productDetails);
+user_router.get("/productDetail", isUser,productController.productDetails);
 
 user_router.get("/resendOtp", isLoggedUser, loginController.resendOtp);
 user_router.post("/login", isLoggedUser, loginController.verifyLogin);
 user_router.get("/login", isLoggedUser, loginController.loginLoad);
+user_router.get('/logout', isLoggedUser, loginController.logoutUser);
 
 // forget password
 user_router.get(
@@ -74,7 +75,9 @@ user_router.get(
 
 /// google Auth
 
-user_router.get("/home", authController.GetGooglelogin);
+// user_router.get("/home", authController.GetGooglelogin);
+ user_router.get("/home", loginController.loadHome);
+
 user_router.get('/auth/google', authController.googleAuth);
 user_router.get('/auth/google/callback', authController.googleAuthCallback);
 

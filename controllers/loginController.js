@@ -208,7 +208,7 @@
 
     const loadHome = async (req, res) => {
       try {
-        
+
         const products = await Products.find();
         return res.render("user/home", { message: "", errMessage: "", products });
       } catch (error) {
@@ -291,6 +291,23 @@
       }
     };
 
+
+    const logoutUser = async (req, res) => {
+      try {
+        req.session.destroy((err) => {
+          if (err) {
+            console.error("Failed to destroy session:", err);
+            return res.status(500).send("Internal Server Error");
+          }
+          res.redirect("/login");
+          console.log("DELETED")
+        });
+      } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Internal Server Error");
+      }
+    };
+    
    
 
 
@@ -311,6 +328,7 @@
       forgetPassVerifyOtp,
       verifyOtp,
       changePassword,
+      logoutUser,
   
 
     }     
