@@ -1,0 +1,289 @@
+<%-include('../admin/adminLayout/adminHeader') %>
+
+<style>
+  .form-outline small {
+    visibility: hidden;
+  }
+  .form-outline {
+    position: relative;
+  }
+  .form-outline i {
+    position: absolute;
+    top: 39px;
+    right: 10px;
+    visibility: hidden;
+  }
+  .form-outline.success label {
+    color: #2ecc71;
+    visibility: visible;
+  }
+  .form-outline.success i.fa-check-circle {
+    color: #2ecc71;
+    visibility: visible;
+  }
+  .form-outline.error i.fa-exclamation-circle {
+    color: #e74c3c;
+    visibility: visible;
+  }
+  .form-outline.error small {
+    color: #e74c3c;
+    visibility: visible;
+  }
+</style>
+
+<div>
+  <div class="screen-overlay"></div>
+  <aside class="navbar-aside" id="offcanvas_aside">
+    <div class="aside-top">
+      <a href="/adminPanel" class="brand-wrap">
+        <p style="font-size: 20px; font-weight: bold">L-ONEZ</p>
+      </a>
+      <div>
+        <button class="btn btn-icon btn-aside-minimize">
+          <i class="text-muted material-icons md-menu_open"></i>
+        </button>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu-aside">
+        <li class="menu-item">
+          <a class="menu-link" href="/adminPanel">
+            <i class="icon material-icons md-home"></i>
+            <span class="text">Dashboard</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a class="menu-link" href="/users">
+            <i class="icon material-icons md-person"></i>
+            <span class="text">Users</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a class="menu-link" href="/productList">
+            <i class="icon material-icons md-shopping_bag"></i>
+            <span class="text">Products</span>
+          </a>
+        </li>
+        <li class="menu-item active">
+          <a class="menu-link" href="/categories">
+            <i class="icon material-icons md-store"></i>
+            <span class="text">Categories</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a class="menu-link" href="/brandList">
+            <i class="icon material-icons md-verified"></i>
+            <span class="text">Brands</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a class="menu-link" href="/orderlist">
+            <i class="icon material-icons md-shopping_cart"></i>
+            <span class="text">Orders</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a class="menu-link" href="/couponList">
+            <i class="icon material-icons md-local_offer"></i>
+            <span class="text">Coupons</span>
+          </a>
+        </li>
+        <li class="menu-item has-submenu">
+          <a class="menu-link">
+            <i class="icon material-icons md-star"></i>
+            <span class="text">Best Selling</span>
+          </a>
+          <div class="submenu">
+            <a href="/bestproducts">Products</a>
+            <a href="/bestcategories">Categories</a>
+            <a href="/bestbrands">Brands</a>
+          </div>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+  <main class="main-wrap">
+    <header class="main-header navbar">
+      <div class="col-search"></div>
+      <div class="col-nav">
+        <button
+          class="btn btn-icon btn-mobile me-auto"
+          data-trigger="#offcanvas_aside"
+        >
+          <i class="material-icons md-apps"></i>
+        </button>
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link btn-icon" href="#">
+              <i class="material-icons md-notifications animation-shake"></i>
+              <span class="badge rounded-pill">3</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link btn-icon darkmode" href="#">
+              <i class="material-icons md-nights_stay"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="requestfullscreen nav-link btn-icon"
+              ><i class="material-icons md-cast"></i
+            ></a>
+          </li>
+          <li class="dropdown nav-item">
+            <a
+              data-bs-toggle="dropdown"
+              href="#"
+              id="dropdownLanguage"
+              aria-expanded="false"
+              ><i class="material-icons md-public"></i
+            ></a>
+          </li>
+          <li class="dropdown nav-item">
+            <a class="dropdown-item text-danger" href="/adminlogout"
+              ><i class="material-icons md-exit_to_app"></i>Logout</a
+            >
+          </li>
+        </ul>
+      </div>
+    </header>
+    <section class="content-main">
+      <div class="content-header div-center">
+        <div class="col-md-6">
+          <form
+            id="categoryForm"
+            action="/editCategory?id=<%= category._id %>"
+            method="post"
+          >
+            <div class="mb-4">
+              <% if (locals.alert) { %>
+              <div class="text-center text-danger" id="error"><%=alert%></div>
+              <% } %>
+              <label for="category_name" class="form-label">Name</label>
+              <input
+                type="text"
+                placeholder="Type here"
+                class="form-control"
+                id="category_name"
+                name="category"
+                value="<%=category.category%>"
+              />
+              <small></small>
+            </div>
+
+            <div class="mb-4">
+              <input class="form-check-input" type="radio" name="list" id="list"
+              value="true" <% if (category.isList == true) { %>checked<% } %>>
+              <label class="form-check-label" for="list">List</label>
+
+              <input class="form-check-input" type="radio" name="list"
+              id="unlist" value="false" <% if (category.isList == false) {
+              %>checked<% } %>>
+              <label class="form-check-label" for="unlist">Unlist</label>
+              <small></small>
+            </div>
+
+            <div class="mb-4">
+              <label for="description" class="form-label">Description</label>
+              <textarea
+                placeholder="Type here"
+                class="form-control"
+                id="description"
+                name="description"
+              >
+<%= category.description %></textarea
+              >
+              <small></small>
+            </div>
+            <div class="d-grid">
+              <button class="btn btn-primary" type="submit">Edit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+  <!-- content-main end// -->
+  <footer class="main-footer font-xs">
+    <div class="row pb-30 pt-15">
+      <div class="col-sm-6">
+        <script>
+          document.write(new Date().getFullYear());
+        </script>
+        ©, Evara - HTML Ecommerce Template .
+      </div>
+      <div class="col-sm-6">
+        <div class="text-sm-end">All rights reserved</div>
+      </div>
+    </div>
+  </footer>
+</div>
+<script>
+  setTimeout(() => {
+    document.getElementById("error").style.display = "none";
+  }, 3000);
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("categoryForm");
+    const categoryName = document.getElementById("category_name");
+    const description = document.getElementById("description");
+    const listRadio = document.getElementById("list");
+    const unlistRadio = document.getElementById("unlist");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      checkInputs();
+    });
+
+    function checkInputs() {
+      const categoryNameValue = categoryName.value.trim();
+      const descriptionValue = description.value.trim();
+      const listChecked = listRadio.checked;
+      const unlistChecked = unlistRadio.checked;
+
+      // Validating category name
+      if (categoryNameValue === "") {
+        setErrorFor(categoryName, "Category name cannot be blank");
+      } else {
+        setSuccessFor(categoryName);
+      }
+
+      // Validating list/unlist radio buttons
+      if (!listChecked && !unlistChecked) {
+        setErrorFor(listRadio, "Please select either List or Unlist");
+      } else {
+        setSuccessFor(listRadio); // You can choose either listRadio or unlistRadio here
+      }
+
+      // Validating description
+      if (descriptionValue === "") {
+        setErrorFor(description, "Description cannot be blank");
+      } else {
+        setSuccessFor(description);
+      }
+
+      // Check if all inputs are successful, then submit the form
+      if (
+        !form.querySelector(".form-outline.error") &&
+        categoryNameValue &&
+        descriptionValue &&
+        (listChecked || unlistChecked)
+      ) {
+        form.submit();
+      }
+    }
+
+    // Handle validation error
+    function setErrorFor(input, message) {
+      const formOutline = input.parentElement; // For taking the form-controll error class
+      const small = formOutline.querySelector("small");
+      small.innerHTML = message;
+      formOutline.className = "form-outline error";
+    }
+
+    // Handle validation success
+    function setSuccessFor(input) {
+      const formOutline = input.parentElement; // For taking the form-controll success class
+      formOutline.className = "form-outline success";
+    }
+  });
+</script>
+<%-include('../admin/adminLayout/adminFooter.ejs') %>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTP Verification</title>
+<!--   
+  <link rel="stylesheet" href="/public/assets/css/otp.css">
+   -->
+</head>
+<body>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      }
+    
+    .container {
+      max-width: 500px;
+      width: 100%; /* Ensure the container takes full width */
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-container {
+      text-align: center;
+    }
+    
+    .login100-form {
+      margin-top: 30px;
+    }
+    
+    .input100 {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    
+    .login100-form-btn {
+      width: 100%;
+      background-color: #007bff; /* Blue color */
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
+    .login100-form-btn:hover {
+      background-color: #0056b3; /* Darker blue on hover */
+    }
+    
+    .error {
+      color: red;
+    }
+    
+    .txt3 {
+      color: #007bff;
+      text-decoration: none;
+    }
+    
+    #resendOtp {
+      display: none;
+    }
+    </style>
+
+<div class="container" id="container">
+  <div class="form-container sign-in">
+    <form action="/otp" method="POST" class="login100-form validate-form p-l-55 p-r-55 p-t-178">
+      <div id="timeoutDisplay"></div>
+      <span class="l">Enter your OTP</span>
+      <div id="message" class="text-center error m-b-16"></div>
+      <div class="wrap-input100 validate-input m-b-16" data-validate="Please enter OTP">
+        <input class="input100" name="otp" placeholder="Enter OTP Here" id="inputOtp" required/>
+        <span id="error-otp"></span>
+        <span class="focus-input100"></span>
+      </div>
+      <div class="container-login100-form-btn">
+        <button type="submit" class="login100-form-btn">Verify</button>
+      </div>
+      <div class="row">
+        <div id="resendOtp" class="flex-col-c p-t-20 p-b-20 col-auto">
+          <br>
+          <a href="/resendOtp" class="txt3">Resend OTP</a>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="toggle-container">
+  </div>
+</div>
+
+<script>
+  // Function to update countdown timer
+  function updateCountdown() {
+    const timeoutDisplay = document.getElementById('timeoutDisplay');
+    let remainingTime = parseInt(timeoutDisplay.dataset.time);
+
+    if (remainingTime > 0) {
+      timeoutDisplay.textContent = `Please wait ${remainingTime} seconds before resending OTP`;
+      timeoutDisplay.dataset.time = remainingTime - 1;
+    } else {
+      // Once countdown reaches 0, show the resend link
+      document.getElementById('resendOtp').style.display = 'block'; // Show the resend link
+      timeoutDisplay.style.display = 'none'; // Hide the countdown timer text
+    }
+  }
+
+  // Initialize countdown timer on page load
+  window.onload = function() {
+    const timeoutDisplay = document.getElementById('timeoutDisplay');
+    timeoutDisplay.dataset.time = 30; // Set initial remaining time in seconds
+    updateCountdown(); // Call updateCountdown to start the countdown
+  };
+
+  // Call updateCountdown function every second
+  setInterval(updateCountdown, 1000);
+</script>
+
+
+</body>
+</html>

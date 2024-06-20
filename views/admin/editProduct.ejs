@@ -1,0 +1,320 @@
+<%- include('../admin/adminLayout/adminHeader') %> <%-
+include('../admin/adminLayout/adminAside.ejs') %>
+
+<style>
+    .existing-images .image-container {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 10px;
+    }
+
+
+    .existing-images .delete-image-btn {
+
+      background-color: transparent;
+      border: none;
+
+      cursor: pointer;
+      padding: 0;
+    }
+  </style>
+  <div class="screen-overlay"></div>  
+  <main class="main-wrap">
+    <header class="main-header navbar">
+      <div class="col-search">
+      </div>
+      <div class="col-nav">
+        <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside">
+          <i class="material-icons md-apps"></i>
+        </button>
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link btn-icon" href="#">
+              <i class="material-icons md-notifications animation-shake"></i>
+              <span class="badge rounded-pill">3</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link btn-icon darkmode" href="#">
+              <i class="material-icons md-nights_stay"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
+          </li>
+          <li class="dropdown nav-item">
+            <a data-bs-toggle="dropdown" href="#" id="dropdownLanguage"
+              aria-expanded="false"><i class="material-icons md-public"></i></a>
+          </li>
+          <li class="dropdown nav-item">
+              <a class="dropdown-item text-danger" href="/adminlogout"><i
+                  class="material-icons md-exit_to_app"></i>Logout</a>
+          </li>
+        </ul>
+      </div>
+    </header>
+      <section class="content-main">
+        <div class="content-header">
+          <div>
+            <h2 class="content-title card-title">Edit Products</h2>
+            <p>Add a Product</p>
+            <% if (locals.alert) { %>
+              <div class="alert alert-danger text-center m-3" id="error">
+                <%= locals.alert %>
+              </div>
+              <% } %>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="row" style="justify-content: center">
+              <div class="col-md-4">
+                <form action="/editProduct/<%= product._id  %>" method="post" enctype="multipart/form-data">
+                  <div class="mb-4">
+                    <label for="product_name" class="form-label">Product title</label>
+                    <input type="text" placeholder="Type here" name="product_title" value="<%= product.product_title %>"
+                      class="form-control" id="product_name" onkeyup="validateName()" />
+                    <span id="name-error" style="font-size: 14px; margin-top: -20px"></span>
+                  </div>
+
+                  <div class="mb-4">
+                    <label class="form-label">Description</label>
+                    <textarea placeholder="Type here" name="description" class="form-control" rows="4"
+                      id="product_description" onkeyup="validateDescription()"><%= product.description %></textarea>
+                    <span id="description-error" style="font-size: 14px; margin-top: -20px"></span>
+                  </div>
+                  <div class="mb-4">
+                    <label class="form-label">Cost in Rs</label>
+                    <input placeholder="0" name="price" class="form-control" id="product_price"
+                      value="<%= product.price %>" onkeyup="validatePrice()">
+
+                    <span id="price-error" style="font-size: 14px; margin-top: -20px"></span>
+                    <span id="price-error" style="font-size: 14px; margin-top: -20px"></span>
+                  </div>
+                  <div class="mb-4">
+                    <label for="product_stock" class="form-label">Stock</label>
+                    <input type="text" placeholder="Stock value" name="stock" value="  <%= product.stock %>"
+                      class="form-control" id="product_stock" onkeyup="validateStock()" />
+
+                    <span id="stock-error" style="font-size: 14px; margin-top: -20px"></span>
+                  </div>
+                  <div class="mb-4">
+                    <label for="product_category" class="form-label">Category</label>
+                    <select name="category" class="form-control" id="product_category">
+                      <% category.forEach(category=> { %>
+                        <option value="<%= category._id %>">
+                          <%= category.category %>
+                        </option>
+                        <% }); %>
+                    </select>
+                  </div>  
+                  <div class="mb-4">
+                 
+                  </div>
+                  <div class="mb-4">
+                    <label class="form-label">Existing Images</label>
+                    <div class="existing-images">
+                      <% if (product.images && product.images.length> 0) { %>
+                        <div class="image-container">
+                          <% product.images.forEach((imageUrl, index)=> { %>
+                            <div class="image-preview">
+                              <img src="/<%= imageUrl %>" alt="Existing Image" class="existing-image" width="500px">
+                              <i class="fa-solid fa-repeat replace-image-icon text-success"
+                                data-index="<%= index %>"></i>
+                              <i class="fa-solid fa-trash delete-image-btn text-danger" data-index="<%= index %>"></i>
+                            </div>
+                            <% }) %>
+                        </div>
+                        <% } else { %>
+                          <p>No existing images</p>
+                          <% } %>
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <label class="form-label">New Images</label>
+                    <input class="form-control" name="images" type="file" id="product_image" multiple
+                      accept=".jpg,.jpeg,.PNG,.webp" />
+                    <span id="image-error" style="font-size: 14px; margin-top: -20px"></span>
+                  </div>
+
+                  <div class="d-grid">
+                    <button class="btn btn-primary" onclick="return validateForm()">
+                      Edit Product
+                    </button>
+                    <span id="submit-error" style="font-size: 14px"></span>
+                  </div>
+                </form>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+    </main>
+    <script>
+document.querySelectorAll('.replace-image-icon').forEach(icon => {
+      icon.addEventListener('click', function () {
+        const index = this.dataset.index;
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.onchange = function (event) {
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              const imagePreview = document.querySelector(`.existing-images .image-container .image-preview:nth-child(${parseInt(index) + 1}) img`);
+              imagePreview.src = e.target.result;
+              updateFileInput(file, index);
+            };
+            reader.readAsDataURL(file);
+          }
+        };
+        fileInput.click();
+      });
+    });
+  
+    function updateFileInput(file, index) {
+      const fileInput = document.getElementById('product_image');
+      const fileList = new DataTransfer();
+      fileList.items.add(file);
+      fileInput.files = fileList.files;
+    }
+</script>
+
+    <script>
+   
+   window.addEventListener('DOMContentLoaded', function () {
+    const existingImages = document.querySelectorAll('.existing-images img');
+    const fileInput = document.getElementById('product_image');
+    const fileList = new DataTransfer();
+
+    existingImages.forEach(function (image) {
+        const url = image.getAttribute('src');
+        const filename = url.substring(url.lastIndexOf('/') + 1);
+        fetch(url)
+            .then(response => response.blob())
+            .then(blob => {
+                const file = new File([blob], filename, { type: blob.type });
+                fileList.items.add(file);
+                fileInput.files = fileList.files;
+            });
+    });
+});
+
+document.querySelectorAll('.delete-image-btn').forEach(button => {
+    button.addEventListener('click', function () {
+        const index = this.dataset.index;
+        const parentDiv = this.parentElement;
+        parentDiv.remove(); 
+        updateFileInput(); 
+    });
+});
+
+function updateFileInput() {
+    const fileInput = document.getElementById('product_image');
+    const existingImages = document.querySelectorAll('.existing-images img');
+    const fileList = new DataTransfer();
+    
+    existingImages.forEach(function (image) {
+        const url = image.getAttribute('src');
+        const filename = url.substring(url.lastIndexOf('/') + 1);
+        fetch(url)
+            .then(response => response.blob())
+            .then(blob => {
+                const file = new File([blob], filename, { type: blob.type });
+                fileList.items.add(file);
+                fileInput.files = fileList.files;
+            });
+    });
+
+    
+    if (existingImages.length === 0) {
+        fileInput.value = ''; 
+    }
+}
+      </script>
+<script>
+  var nameError = document.getElementById("name-error");
+  var descriptionError = document.getElementById("description-error");
+  var priceError = document.getElementById("price-error");
+  var imageError = document.getElementById("image-error");
+  var stockError = document.getElementById("stock-error");
+  var submitError = document.getElementById("submit-error");
+
+  function validateName() {
+    var name = document.getElementById("product_name").value.trim();
+    if (name.length === 0) {
+      nameError.innerHTML = "Product name is required";
+      nameError.style.color = "red";
+      return false;
+    }
+    nameError.innerHTML = "Valid";
+    nameError.style.color = "green";
+    return true;
+  }
+
+  function validateDescription() {
+    var desc = document.getElementById("product_description").value.trim();
+    if (desc.length === 0) {
+      descriptionError.innerHTML = "Description is required";
+      descriptionError.style.color = "red";
+      return false;
+    }
+    descriptionError.innerHTML = "Valid";
+    descriptionError.style.color = "green";
+    return true;
+  }
+
+  function validatePrice() {
+    var price = document.getElementById("product_price").value.trim();
+    var priceError = document.getElementById("price-error");
+
+    if (price.length === 0 || isNaN(price) || parseFloat(price) <= 0) {
+      priceError.innerHTML = "Price is required and must be a positive number";
+      priceError.style.color = "red";
+      return false;
+    }
+
+    priceError.innerHTML = "Valid";
+    priceError.style.color = "green";
+    return true;
+  }
+
+  function validateStock() {
+    var stock = document.getElementById("product_stock").value.trim();
+    if (stock.length === 0 || isNaN(stock) || parseInt(stock) < 0) {
+      stockError.innerHTML = "Stock is required and must be a non-negative number";
+      stockError.style.color = "red";
+      return false;
+    }
+    stockError.innerHTML = "Valid";
+    stockError.style.color = "green";
+    return true;
+  }
+
+  function validateForm() {
+    if (
+      !validateName() ||
+      !validateDescription() ||
+      !validatePrice() ||
+      !validateImage() ||
+      !validateStock()
+    ) {
+      submitError.style.display = "block";
+      submitError.innerHTML = "Please enter all the fields correctly to submit ";
+      submitError.style.color = "red";
+      setTimeout(function () {
+        submitError.style.display = "none";
+      }, 3000);
+      return false;
+    }
+  }
+</script>
+
+
+<%- include('../admin/adminLayout/adminFooter') %>
